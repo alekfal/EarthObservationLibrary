@@ -1,2 +1,4 @@
 # EarthObservationLibrary
-Simple python funtctions for raster manipulation.
+Simple python functions for raster manipulation.
+
+Required Python Libraries: rasterio, numpy
