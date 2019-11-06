@@ -2,18 +2,26 @@
 # Name: Falagas Alekos
 # Location: RSLab, SRSE-NTUA, 2019
 # e-mail: alek.falagas@gmail.com
-# Version: 0.0.3
+# Version: 0.0.4
+
+"""
+Latest Update:
+
+1. writeraster is checking for datatypes based on user's input and array's datatype.
+2. New function datatypes added.
+
+"""
 
 import rasterio
 import os
+import sys
 import numpy as np
 
-def metadata(path, name,  verbose = False):
-    "A simple function to read raster file metadata."
 
-    dtype_fwd = {
-        None: 0, #GDT_Unknown
-        'uint8':1, #GDT_Byte
+def datatypes(dtp):
+
+    dtype_fwd = {None: 0, #GDT_Unknown
+        'uint8': 1, #GDT_Byte
         'ubyte': 1, #GDT_Byte
         'uint16': 2, #GDT_UInt16
         'int16': 3, #GDT_Int16
@@ -26,17 +34,22 @@ def metadata(path, name,  verbose = False):
         'complex64': 10, #GDT_CFloat32
         'complex128': 11} #GDT_CFloat64
 
+    return (dtype_fwd[dtp])
+
+def metadata(path, name,  verbose = False):
+    "A simple function to read raster file metadata."
+
     image = rasterio.open(os.path.join(path, name))
     crs = image.crs
     bands = image.count
     up_l_crn = image.transform * (0, 0)
     pixel_size = image.transform[0]
-    rows = image.width
-    cols = image.height
+    width = image.width
+    height = image.height
     dtps = image.dtypes
     dtp_code= []
     for dtp in dtps:
-        dtp_code.append(dtype_fwd[dtp])
+        dtp_code.append(datatypes(dtp))
         if verbose == True:
             print ('Data Type: {} - {}'.format(dtp, dtp_code))
     driver = image.driver
@@ -48,20 +61,23 @@ def metadata(path, name,  verbose = False):
         print ('Bands: {}'.format(bands))
         print ('Upper Left Corner: {}'.format(up_l_crn))
         print ('Pixel size: {}'.format(pixel_size))
-        print ('Rows: {}'.format(rows))
-        print ('Columns: {}'.format(cols))
+        print ('Width: {}'.format(width))
+        print ('Height: {}'.format(height))
         print (driver)
         print ('UTM Zone: {}'.format(utm))
 
-    return (crs, bands, up_l_crn, pixel_size, rows, cols, dtps, dtp_code, driver, utm)
+    return (crs, bands, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm)
 
 def readraster(path, name, bands = -1):
-    "A simple function to read raster files."
+    """
+    A simple function to read raster files.
+    Default values: bands = -1 -> read all bands
+    """
     print ('Trying to read raster file...')
     print ('Reading file {}.'.format(name))
     # Reading data with rasterio
     image = rasterio.open(os.path.join(path, name))
-    crs, count, up_l_crn, pixel_size, rows, cols, dtps, dtp_code, driver, utm = metadata(path, name)
+    crs, count, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm = metadata(path, name)
     transform = image.transform
 
     # Getting all Bands
@@ -70,36 +86,62 @@ def readraster(path, name, bands = -1):
     else:
         array = image.read(bands)
     print ('Done!')
-    return (image, array, crs, count, up_l_crn, pixel_size, rows, cols, dtps, dtp_code, driver, utm, transform)
+    return (image, array, crs, count, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm, transform)
 
-def writeraster(path, name, array, width, height, crs, transform, dtype, ext = 'Gtiff'):
+def writeraster(path, name, array, width, height, crs, transform, dtype = (rasterio.float32,), ext = 'Gtiff'):
     print ('Trying to write raster data...')
-    # Export stacked color image
+    
+    # Checking if there are more than 1 dtypes and dtype is a list
+    if len(dtype) > 0 and isinstance(dtype, tuple):
+        # Checking for unique values in case of multiband image
+        unique = list(set(dtype))
+        if len(unique) > 0:
+            fdtype = unique[0]
+            for u in unique:
+                if datatypes(fdtype) < datatypes(u):
+                    fdtype = u
+        else:
+            fdtype = dtype
+    else:
+        print ('Something is wrong with datatypes. Try to use readraster(...) to open the image.')
+        sys.exit(1)
 
-    if len(dtype) > 0:
-        dtype = dtype[0]
+    #Checking if user's datatype matches with array's datatype
+    if len(array.shape) == 3:
+        for i in range(len(array)):
+            if array[i, :, :].dtype != fdtype:
+                print ("Found difference in array's datatype and user's datatype.")
+                print ("Replacing datatype {} with {}.".format(fdtype, array[i, :, :].dtype))
+                fdtype = array[i, :, :].dtype
+    else:
+         if array.dtype != fdtype:
+            print ("Found difference in array's datatype and user's datatype.")
+            print ("Replacing datatype {} with {}.".format(fdtype, array.dtype))
+            fdtype = array.dtype
 
+    # Multiband images
     if len(array.shape) == 3:
         bands=rasterio.open(name,'w',driver=ext,width=width, height=height,
             count = len(array),
             crs = crs,
             transform = transform,
-            dtype = dtype)
+            dtype = fdtype)
         for b in range(len(array)):
             bands.write(array[b,:,:], b+1)
         bands.close()
+    # Singleband image
     else:
         bands=rasterio.open(name,'w',driver=ext,width=width, height=height,
             count = 1,
             crs = crs,
             transform = transform,
-            dtype = dtype)
+            dtype = fdtype)
         bands.write(array, 1)
         bands.close()
     print ('Raster saved as {}.'.format(name))
 
 def split_bands(path, name, verbose = False):
-    "A simple function to split multiband raster data to single images"
+    "A simple function to split multiband raster data to single images."
     # Reading data with rasterio
     image = rasterio.open(os.path.join(path, name))
     # Getting image name without extension
@@ -109,10 +151,7 @@ def split_bands(path, name, verbose = False):
         if verbose == True:
             print ('Trying to save band {} as {}'.format(b, filename))
         band=rasterio.open(filename,'w',driver = 'Gtiff',width = image.width, height=image.height, count = 1, crs = image.crs, transform = image.transform, dtype=image.read(b).dtype)
-        band.write(image.read(b), 1) #green
+        band.write(image.read(b), 1)
         band.close()
         if verbose == True:
             print('Done!')
-
-#Test
-#split_bands('./', 'Ortho_Ziogas_SWIR_GG87.tif')
