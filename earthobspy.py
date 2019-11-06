@@ -121,7 +121,7 @@ def writeraster(path, name, array, width, height, crs, transform, dtype = (raste
 
     # Multiband images
     if len(array.shape) == 3:
-        bands=rasterio.open(name,'w',driver=ext,width=width, height=height,
+        bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
             count = len(array),
             crs = crs,
             transform = transform,
@@ -131,7 +131,7 @@ def writeraster(path, name, array, width, height, crs, transform, dtype = (raste
         bands.close()
     # Singleband image
     else:
-        bands=rasterio.open(name,'w',driver=ext,width=width, height=height,
+        bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
             count = 1,
             crs = crs,
             transform = transform,
