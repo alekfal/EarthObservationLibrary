@@ -1,58 +1,114 @@
 # EarthObservationLibrary
-Simple python functions for raster manipulation.
 
-### Functions
-------------------------------------------------
-#### readraster:
-Inputs: 
-* path (String, path to file)
-* name (String, name of the file)
-* bands (default value = -1, read all bands)
+Collection of python functions for raster manipulation.
 
-Outputs:
-* image (rasterio object)
-* array (numpy array, the array from the raster)
-* crs (String)
-* count (Integer)
-* up_l_crn (Tuple)
-* pixel_size (Integer)
-* width (Integer)
-* height (Integer)
-* dtps (Tuple)
-* dtp_code (Tuple)
-* driver (String)
-* utm (String)
-* transform (String)
-
-####  writeraster:
-Inputs: 
-* path (String, path to file)
-* name (String, name of the file)
-* array (numpy array, the array from the raster)
-* width (Integer)
-* height (Integer)
-* crs (String)
-* transform (String)
-* dtype (Tuple, default value = (rasterio.float32,))
-* ext (String, default value = 'Gtiff')
-
-Outputs:
-* Raster file to the selected path.
-
-#### Other functions:
-
-split_bands (Spliting a multiband image to singleband images), metadata, datatypes
-
-------------------------------------------------
 ### Required Python Libraries
+
 ------------------------------------------------
+
 #### rasterio
-Install with pip:
-$ pip install rasterio
+Install with pip3: ```$pip3 install rasterio```
 
 #### numpy
-Install with pip:
-$ pip install numpy
+Install with pip: ```$pip install numpy```
 
 ------------------------------------------------
 
+### Functions
+
+------------------------------------------------
+
+#### readraster
+
+A simple function to read raster files. Uses function metadata() for getting information about the image.
+    
+ ```   
+
+Inputs:
+
+    * path - Path to raster file (string)
+    * name - Name of the raster file (string)
+    * bands - Default values: bands = -1 (read all bands). For reading for example the first 2 bands of a
+      multiband use variable bands as: bands = (1, 2). To read 1 band just provide the corresponding band number
+
+Outputs:
+
+    * image - The image as a rasterio object
+    * array - The image as a np.array
+    * all the metadata from function metadata()
+
+```
+
+####  writeraster
+
+Write a new raster with rasterio.
+
+```
+
+Inputs:
+
+    * path - Path to raster file (string)
+    * name - Name of the raster file (string)
+    * array - The image as a np.array (np.array)
+    * width - Number of columns (Integer)
+    * height - Number of rows (Integer)
+    * crs - Coordinates Reference System (String)
+    * transform - Image transform (Tuple)
+    * dtype - Image datatype (Optional, default value = (rasterio.float32,)). In case of difference in array's datatype and user's datatype
+      the script will save data with array's datatype (tuple)
+    * ext - Extension (Optional, default value = 'Gtiff') (string)
+
+Outputs:
+    
+    * Raster file to selected path 
+
+```
+
+#### metadata
+
+A simple function to read raster file metadata.
+
+```
+
+Inputs:
+
+    * path - Path to raster file (string)
+    * name - Name of the raster file (string)
+    * verbose - Printing results (Optional, default value = False) (bool)
+
+Outputs:
+
+    * crs - Coordinates Reference System (String)
+    * bands - Number of bands (Integer)
+    * up_l_crn - Upper left corner coordinates (Tuple)
+    * pixel_size - Pixel size (Integer)
+    * width - Number of columns (Integer)
+    * height - Number of rows (Integer)
+    * dtps - Image's datatype (Tuple)
+    * dtp_code - Datatype's code (Tuple)
+    * driver - Image's driver (String)
+    * utm - Image's CRS in WKT (String)
+    * transform - Image's transform (Tuple)
+
+```
+
+#### split_bands
+
+A simple function to split multiband raster data to single images.
+    
+```
+
+Inputs:
+    
+    * path - Path to raster file (string)
+    * name - Name of the raster file (string)
+    * name_ext - New name extension (Optional, default value = '_band_') (string)
+    * verbose - Printing results (Optional, default value = False) (bool)
+    
+Outputs:
+
+    * Raster files to selected path
+
+```
+
+------------------------------------------------
