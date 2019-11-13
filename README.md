@@ -9,10 +9,10 @@ Collection of python functions for raster manipulation.
 ------------------------------------------------
 
 #### rasterio
-Install with pip3: ```$pip3 install rasterio```
+Installation with pip3: ```$pip3 install rasterio```
 
 #### numpy
-Install with pip3: ```$pip3 install numpy```
+Installation with pip3: ```$pip3 install numpy```
 
 
 
