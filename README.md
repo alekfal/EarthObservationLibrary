@@ -2,9 +2,11 @@
 
 Collection of python functions for raster manipulation.
 
+------------------------------------------------
+
 ### Required Python Libraries
 
-------------------------------------------------
+
 
 #### rasterio
 Install with pip3: ```$pip3 install rasterio```
@@ -16,7 +18,7 @@ Install with pip: ```$pip install numpy```
 
 ### Functions
 
-------------------------------------------------
+---------
 
 #### readraster
 
@@ -38,6 +40,7 @@ Outputs:
     * all the metadata from function metadata()
 
 ```
+---------
 
 ####  writeraster
 
@@ -63,6 +66,8 @@ Outputs:
     * Raster file to selected path 
 
 ```
+
+---------
 
 #### metadata
 
@@ -92,6 +97,8 @@ Outputs:
 
 ```
 
+---------
+
 #### split_bands
 
 A simple function to split multiband raster data to single images.
@@ -110,5 +117,6 @@ Outputs:
     * Raster files to selected path
 
 ```
+---------
 
 ------------------------------------------------
