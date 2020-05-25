@@ -142,7 +142,7 @@ class Pyearthobs:
                 dtype = fdtype)
             bands.write(array, 1)
             bands.close()
-        print ('Raster saved as {}.'.format(name))
+        print ('Raster saved as {}!'.format(name))
 
     @staticmethod
     def split_bands(path, name, verbose = False):

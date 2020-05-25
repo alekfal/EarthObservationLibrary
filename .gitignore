@@ -104,7 +104,7 @@ venv.bak/
 .mypy_cache/
 
 # test folder
-./Test
+Test/
 
 # virtual env folder
-./testenv
+testenv/
