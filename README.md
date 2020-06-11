@@ -8,15 +8,20 @@ Collection of python functions for raster manipulation.
 
 ------------------------------------------------
 
-#### rasterio
-Installation with pip3: ```$pip3 install rasterio```
+```rasterio>=1.1.2```
+```numpy>=1.18.5```
 
-#### numpy
-Installation with pip3: ```$pip3 install numpy```
+### Installation
 
+------------------------------------------------
 
+```
+$git clone https://github.com/alekfal/EarthObservationLibrary.git
+$cd EarthObservationLibrary
+$pip install .
+```
 
-### Functions
+### Methods
 
 ------------------------------------------------
 
