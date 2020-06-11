@@ -103,8 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# test folder
-Test/
-
-# virtual env folder
-testenv/
+# virtual env folder and other custom folders
+testearthobs/
+Data/

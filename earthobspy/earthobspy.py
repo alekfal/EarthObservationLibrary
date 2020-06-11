@@ -2,22 +2,14 @@
 # Name: Falagas Alekos
 # Location: RSLab, SRSE-NTUA, 2019
 # e-mail: alek.falagas@gmail.com
-# Version: 0.0.4
-
-"""
-Latest Update:
-
-1. writeraster is checking for datatypes based on user's input and array's datatype.
-2. New function datatypes added.
-
-"""
+# Version: 0.0.5
 
 import rasterio
 import os
 import sys
 import numpy as np
 
-class Pyearthobs:
+class earthobspy:
     
     @staticmethod
     def datatypes(dtp):
@@ -47,12 +39,13 @@ class Pyearthobs:
         bands = image.count
         up_l_crn = image.transform * (0, 0)
         pixel_size = image.transform[0]
+        nodata = image.nodata
         width = image.width
         height = image.height
         dtps = image.dtypes
         dtp_code= []
         for dtp in dtps:
-            dtp_code.append(Pyearthobs.datatypes(dtp))
+            dtp_code.append(earthobspy.datatypes(dtp))
             if verbose == True:
                 print ('Data Type: {} - {}'.format(dtp, dtp_code))
         driver = image.driver
@@ -69,7 +62,7 @@ class Pyearthobs:
             print (driver)
             print ('UTM Zone: {}'.format(utm))
 
-        return (crs, bands, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm)
+        return (crs, bands, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm, nodata)
 
     @staticmethod
     def readraster(path, name, bands = -1):
@@ -81,7 +74,7 @@ class Pyearthobs:
         print ('Reading file {}.'.format(name))
         # Reading data with rasterio
         image = rasterio.open(os.path.join(path, name))
-        crs, count, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm = Pyearthobs.metadata(path, name)
+        crs, count, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm, nodata = earthobspy.metadata(path, name)
         transform = image.transform
 
         # Getting all Bands
@@ -93,7 +86,7 @@ class Pyearthobs:
         return (image, array, crs, count, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm, transform)
 
     @staticmethod
-    def writeraster(path, name, array, width, height, crs, transform, dtype = (rasterio.float32,), ext = 'Gtiff'):
+    def writeraster(path, name, array, width, height, crs, transform, nodata = None, dtype = (rasterio.float32,), ext = 'Gtiff'):
         print ('Trying to write raster data...')
         # Checking if there are more than 1 dtypes and dtype is a list
         if len(dtype) > 0 and isinstance(dtype, tuple):
@@ -102,7 +95,7 @@ class Pyearthobs:
             if len(unique) > 0:
                 fdtype = unique[0]
                 for u in unique:
-                    if Pyearthobs.datatypes(fdtype) < Pyearthobs.datatypes(u):
+                    if earthobspy.datatypes(fdtype) < earthobspy.datatypes(u):
                         fdtype = u
             else:
                 fdtype = dtype
@@ -125,21 +118,37 @@ class Pyearthobs:
 
         # Multiband images
         if len(array.shape) == 3:
-            bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
-                count = len(array),
-                crs = crs,
-                transform = transform,
-                dtype = fdtype)
+            if nodata == None:
+                bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
+                    count = len(array),
+                    crs = crs,
+                    transform = transform,
+                    dtype = fdtype)
+            else:
+                bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
+                    count = len(array),
+                    crs = crs,
+                    transform = transform,
+                    dtype = fdtype,
+                    nodata = nodata)
             for b in range(len(array)):
                 bands.write(array[b,:,:], b+1)
             bands.close()
         # Singleband image
         else:
-            bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
-                count = 1,
-                crs = crs,
-                transform = transform,
-                dtype = fdtype)
+            if nodata == None:
+                bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
+                    count = 1,
+                    crs = crs,
+                    transform = transform,
+                    dtype = fdtype)
+            else:
+                bands=rasterio.open(os.path.join(path, name),'w',driver=ext,width=width, height=height,
+                    count = len(array),
+                    crs = crs,
+                    transform = transform,
+                    dtype = fdtype,
+                    nodata = nodata)
             bands.write(array, 1)
             bands.close()
         print ('Raster saved as {}!'.format(name))
@@ -155,7 +164,7 @@ class Pyearthobs:
             filename = name_we + '_band_{}.tif'.format(b)
             if verbose == True:
                 print ('Trying to save band {} as {}'.format(b, filename))
-            band=rasterio.open(filename,'w',driver = 'Gtiff',width = image.width, height=image.height, count = 1, crs = image.crs, transform = image.transform, dtype=image.read(b).dtype)
+            band=rasterio.open(os.path.join(path, filename),'w',driver = 'Gtiff',width = image.width, height=image.height, count = 1, crs = image.crs, transform = image.transform, dtype=image.read(b).dtype)
             band.write(image.read(b), 1)
             band.close()
             if verbose == True:
