@@ -83,7 +83,7 @@ class earthobspy:
         else:
             array = image.read(bands)
         print ('Done!')
-        return (image, array, crs, count, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm, transform)
+        return (image, array, crs, count, up_l_crn, pixel_size, width, height, dtps, dtp_code, driver, utm, transform, nodata)
 
     @staticmethod
     def writeraster(path, name, array, width, height, crs, transform, nodata = None, dtype = (rasterio.float32,), ext = 'Gtiff'):

@@ -8,8 +8,10 @@ Collection of python functions for raster manipulation.
 
 ------------------------------------------------
 
-```rasterio>=1.1.2```
-```numpy>=1.18.5```
+```
+rasterio>=1.1.2
+numpy>=1.18.5
+```
 
 ### Installation
 
@@ -19,6 +21,27 @@ Collection of python functions for raster manipulation.
 $git clone https://github.com/alekfal/EarthObservationLibrary.git
 $cd EarthObservationLibrary
 $pip install .
+```
+### Example
+
+------------------------------------------------
+
+```
+from earthobspy import earthobspy
+import numpy as np
+
+# Read data
+image, array, crs, bands, up_l_crn, pixel_size, rows, cols, dtps, dtp_code, driver, utm, transform = earthobspy.readraster(path, raster)
+
+# Processing (multiply every array * 1000)
+new_array = np.zeros(array.shape)
+for b in range(array.shape[0]):
+    new_array[b,:,:] = (array[b,:,:] * 1000)
+
+# Writing data
+raster = raster.split(".")[0] + "_1000.tif"
+earthobspy.writeraster(path, raster, new_array, rows, cols, crs, transform, dtype = ('float32',), nodata = 0)
+
 ```
 
 ### Methods
@@ -57,14 +80,14 @@ Inputs:
     * path - Path to raster file (string)
     * name - Name of the raster file (string)
     * array - The image as a np.array (np.array)
-    * width - Number of columns (Integer)
-    * height - Number of rows (Integer)
-    * crs - Coordinates Reference System (String)
-    * transform - Image transform (Tuple)
+    * width - Number of columns (integer)
+    * height - Number of rows (integer)
+    * crs - Coordinates Reference System (string)
+    * transform - Image transform (tuple)
     * dtype - Image datatype (Optional, default value = (rasterio.float32,)). In case of difference in array's datatype and user's datatype
       the script will save data with array's datatype (tuple)
     * ext - Extension (Optional, default value = 'Gtiff') (string)
-
+    * nodata - No data value (Optional, default value = None) (numeric)
 Outputs:
     
     * Raster file to selected path 
@@ -85,17 +108,18 @@ Inputs:
 
 Outputs:
 
-    * crs - Coordinates Reference System (String)
-    * bands - Number of bands (Integer)
-    * up_l_crn - Upper left corner coordinates (Tuple)
-    * pixel_size - Pixel size (Integer)
-    * width - Number of columns (Integer)
-    * height - Number of rows (Integer)
-    * dtps - Image's datatype (Tuple)
-    * dtp_code - Datatype's code (Tuple)
-    * driver - Image's driver (String)
-    * utm - Image's CRS in WKT (String)
-    * transform - Image's transform (Tuple)
+    * crs - Coordinates Reference System (string)
+    * bands - Number of bands (integer)
+    * up_l_crn - Upper left corner coordinates (tuple)
+    * pixel_size - Pixel size (integer)
+    * width - Number of columns (integer)
+    * height - Number of rows (integer)
+    * dtps - Image's datatype (tuple)
+    * dtp_code - Datatype's code (tuple)
+    * driver - Image's driver (string)
+    * utm - Image's CRS in WKT (string)
+    * transform - Image's transform (tuple)
+    * nodata - No data value of input image (numeric)
 
 ```
 
