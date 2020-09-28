@@ -53,12 +53,14 @@ earthobspy.writeraster(path, raster, new_array, rows, cols, crs, transform, dtyp
 A method to read raster files. Uses static method metadata() for getting information about the image.
 
 Inputs:
+
     * path - Path to raster file (string)
     * name - Name of the raster file (string)
     * bands - Default values: bands = -1 (read all bands). For reading for example the first 2 bands of a
       multiband use variable bands as: bands = (1, 2). To read 1 band just provide the corresponding band number
 
 Outputs:
+
     * image - The image as a rasterio object
     * array - The image as a np.array
     * all the metadata from function metadata()
@@ -67,7 +69,9 @@ Outputs:
 ####  writeraster
 
 Write a new raster with rasterio.
+
 Inputs:
+
     * path - Path to raster file (string)
     * name - Name of the raster file (string)
     * array - The image as a np.array (np.array)
@@ -79,7 +83,9 @@ Inputs:
       the script will save data with array's datatype (tuple)
     * ext - Extension (Optional, default value = 'Gtiff') (string)
     * nodata - No data value (Optional, default value = None) (numeric)
+
 Outputs: 
+
     * Raster file to selected path 
 
 #### metadata
@@ -87,11 +93,13 @@ Outputs:
 A method to read raster file metadata.
 
 Inputs:
+
     * path - Path to raster file (string)
     * name - Name of the raster file (string)
     * verbose - Printing results (Optional, default value = False) (bool)
 
 Outputs:
+
     * crs - Coordinates Reference System (string)
     * bands - Number of bands (integer)
     * up_l_crn - Upper left corner coordinates (tuple)
@@ -109,9 +117,11 @@ Outputs:
 A simple function to split multiband raster data to single images.
 
 Inputs:
+
     * path - Path to raster file (string)
     * name - Name of the raster file (string)
     * verbose - Printing results (Optional, default value = False) (bool)
     
 Outputs:
+
     * Raster files to selected path
