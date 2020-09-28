@@ -2,7 +2,7 @@
 # Name: Falagas Alekos
 # Location: RSLab, SRSE-NTUA, 2019
 # e-mail: alek.falagas@gmail.com
-# Version: 0.0.5
+# Version: 0.0.6
 
 import rasterio
 import os
@@ -10,9 +10,18 @@ import sys
 import numpy as np
 
 class earthobspy:
+    """Collection of methods for raster manipulation based on rasterio"""
     
     @staticmethod
     def datatypes(dtp):
+        """ A method that returns the code of datatype.
+
+        Args:
+            dtp (dict): A dictonary with the valid datatypes and codes
+
+        Returns:
+            int: The valid datatype code
+        """
 
         dtype_fwd = {None: 0, #GDT_Unknown
             'uint8': 1, #GDT_Byte
@@ -32,8 +41,16 @@ class earthobspy:
 
     @staticmethod
     def metadata(path, name,  verbose = False):
-        "A simple function to read raster file metadata."
+        """A simple function to read raster file metadata.
 
+        Args:
+            path (str, path-like): Path to file
+            name (str): File name
+            verbose (bool, optional): If True prints information about the raster data. Defaults to False
+
+        Returns:
+            tuple: Returns metadata about the raster
+        """
         image = rasterio.open(os.path.join(path, name))
         crs = image.crs
         bands = image.count
@@ -66,9 +83,16 @@ class earthobspy:
 
     @staticmethod
     def readraster(path, name, bands = -1):
-        """
-        A simple function to read raster files.
-        Default values: bands = -1 -> read all bands
+        """A simple function to read raster files.
+            Default values: bands = -1 -> read all bands
+
+        Args:
+            path (str, path-like): Path to file
+            name (str): File name
+            bands (int, optional): Reads a specific band to memory, else reads the whole raster (-1). Defaults to -1
+
+        Returns:
+            tuple: Returns the image as rasterio object, the array as ndarray and more metadata about the raster
         """
         print ('Trying to read raster file...')
         print ('Reading file {}.'.format(name))
@@ -155,7 +179,13 @@ class earthobspy:
 
     @staticmethod
     def split_bands(path, name, verbose = False):
-        "A simple function to split multiband raster data to single images."
+        """A simple function to split multiband raster data to single images.
+
+        Args:
+            path (str, path-like): Path to file
+            name (str): File name
+            verbose (bool, optional): If True prints information about the process. Defaults to False
+        """
         # Reading data with rasterio
         image = rasterio.open(os.path.join(path, name))
         # Getting image name without extension

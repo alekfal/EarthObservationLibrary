@@ -8,7 +8,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name = "earthobspy",
-    version = "0.0.5",
+    version = "0.0.6",
     author = "Falagas Alekos",
     author_email = "alek.falagas@gmail.com",
     description = "Collection of functions for raster manipulation based on rasterio",
