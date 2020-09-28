@@ -18,9 +18,9 @@ numpy>=1.18.5
 ------------------------------------------------
 
 ```bash
-$git clone https://github.com/alekfal/EarthObservationLibrary.git
-$cd EarthObservationLibrary
-$pip install .
+git clone https://github.com/alekfal/EarthObservationLibrary.git
+cd EarthObservationLibrary
+pip install .
 ```
 ### Example
 
