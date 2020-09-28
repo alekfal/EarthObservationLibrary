@@ -41,7 +41,7 @@ class earthobspy:
 
     @staticmethod
     def metadata(path, name,  verbose = False):
-        """A simple function to read raster file metadata.
+        """A method to read raster file metadata.
 
         Args:
             path (str, path-like): Path to file
@@ -83,7 +83,7 @@ class earthobspy:
 
     @staticmethod
     def readraster(path, name, bands = -1):
-        """A simple function to read raster files.
+        """A method to read raster files.
             Default values: bands = -1 -> read all bands
 
         Args:
@@ -179,7 +179,7 @@ class earthobspy:
 
     @staticmethod
     def split_bands(path, name, verbose = False):
-        """A simple function to split multiband raster data to single images.
+        """A method to split multiband raster data to single images.
 
         Args:
             path (str, path-like): Path to file
