@@ -17,7 +17,7 @@ numpy>=1.18.5
 
 ------------------------------------------------
 
-```
+```bash
 $git clone https://github.com/alekfal/EarthObservationLibrary.git
 $cd EarthObservationLibrary
 $pip install .
@@ -26,7 +26,7 @@ $pip install .
 
 ------------------------------------------------
 
-```
+```python
 from earthobspy import earthobspy
 import numpy as np
 
